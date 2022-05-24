@@ -1,9 +1,10 @@
-package com.programming.techie;
+package com.company.main;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -31,9 +32,9 @@ class ContactManagerTest {
     @Test
     public void shouldCreateContact() {
         contactManager.addContact("John", "Doe", "0123456789");
-        Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
-        Assertions.assertEquals(1, contactManager.getAllContacts().size());
-        Assertions.assertTrue(contactManager.getAllContacts().stream()
+        assertFalse(contactManager.getAllContacts().isEmpty());
+        assertEquals(1, contactManager.getAllContacts().size());
+        assertTrue(contactManager.getAllContacts().stream()
                 .filter(contact -> contact.getFirstName().equals("John") &&
                         contact.getLastName().equals("Doe"))
                 .findAny()
@@ -80,9 +81,9 @@ class ContactManagerTest {
     @EnabledOnOs(value = OS.MAC, disabledReason = "Enabled only on MAC OS")
     public void shouldCreateContactOnlyOnMac() {
         contactManager.addContact("John", "Doe", "0123456789");
-        Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
-        Assertions.assertEquals(1, contactManager.getAllContacts().size());
-        Assertions.assertTrue(contactManager.getAllContacts().stream()
+        assertFalse(contactManager.getAllContacts().isEmpty());
+        assertEquals(1, contactManager.getAllContacts().size());
+        assertTrue(contactManager.getAllContacts().stream()
                 .filter(contact -> contact.getFirstName().equals("John") &&
                         contact.getLastName().equals("Doe"))
                 .findAny()
@@ -95,9 +96,9 @@ class ContactManagerTest {
     @EnabledOnOs(value = OS.WINDOWS, disabledReason = "Enabled only on Windows")
     public void shouldCreateContactOnlyOnWindows() {
         contactManager.addContact("John", "Doe", "0123456789");
-        Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
-        Assertions.assertEquals(1, contactManager.getAllContacts().size());
-        Assertions.assertTrue(contactManager.getAllContacts().stream()
+        assertFalse(contactManager.getAllContacts().isEmpty());
+        assertEquals(1, contactManager.getAllContacts().size());
+        assertTrue(contactManager.getAllContacts().stream()
                 .filter(contact -> contact.getFirstName().equals("John") &&
                         contact.getLastName().equals("Doe"))
                 .findAny()
@@ -111,9 +112,9 @@ class ContactManagerTest {
     public void shouldCreateContactOnlyOnDev() {
         Assumptions.assumeTrue("DEV".equals(System.getProperty("ENV")));
         contactManager.addContact("John", "Doe", "0123456789");
-        Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
-        Assertions.assertEquals(1, contactManager.getAllContacts().size());
-        Assertions.assertTrue(contactManager.getAllContacts().stream()
+        assertFalse(contactManager.getAllContacts().isEmpty());
+        assertEquals(1, contactManager.getAllContacts().size());
+        assertTrue(contactManager.getAllContacts().stream()
                 .filter(contact -> contact.getFirstName().equals("John") &&
                         contact.getLastName().equals("Doe"))
                 .findAny()
@@ -121,43 +122,59 @@ class ContactManagerTest {
         );
     }
 
-    @DisplayName("Repeat Contact Creation Test 5 times")
-    @RepeatedTest(value = 5, name = "Repeating Contact Creation Test {currentRepetition} of {totalRepetitions}")
-    public void shouldCreateContactRepeatedly() {
-        contactManager.addContact("John", "Doe", "0123456789");
-        Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
-        Assertions.assertEquals(1, contactManager.getAllContacts().size());
-    }
-
-    @DisplayName("Repeat Contact Creation Test 5 times")
-    @ParameterizedTest
-    @ValueSource(strings = {"0123456789","0123456789","0123456789"})
-    public void shouldCreateContactCreationUsingValueSource(String phoneNumber) {
-        contactManager.addContact("John", "Doe", phoneNumber);
-        Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
-        Assertions.assertEquals(1, contactManager.getAllContacts().size());
-    }
-
     @DisplayName("Method Source Case - Phone Number should match the required Format")
     @ParameterizedTest
     @MethodSource("phoneNumberList")
     public void shouldCreateContactCreationUsingMethodSource(String phoneNumber) {
         contactManager.addContact("John", "Doe", phoneNumber);
-        Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
-        Assertions.assertEquals(1, contactManager.getAllContacts().size());
+        assertFalse(contactManager.getAllContacts().isEmpty());
+        assertEquals(1, contactManager.getAllContacts().size());
     }
 
     private static List<String> phoneNumberList() {
         return Arrays.asList("0123456789","0123456798", "0123456797");
     }
 
-    @DisplayName("Method Source Case - Phone Number should match the required Format")
-    @ParameterizedTest
-    @CsvSource({"0123456789","0123456798", "0123456797"})
-    public void shouldCreateContactCreationUsingCsvSource(String phoneNumber) {
-        contactManager.addContact("John", "Doe", phoneNumber);
-        Assertions.assertFalse(contactManager.getAllContacts().isEmpty());
-        Assertions.assertEquals(1, contactManager.getAllContacts().size());
+    @Nested
+    class RepeatedNestedTest {
+
+        @DisplayName("Repeat Contact Creation Test 5 times")
+        @RepeatedTest(value = 5, name = "Repeating Contact Creation Test {currentRepetition} of {totalRepetitions}")
+        public void shouldCreateContactRepeatedly() {
+            contactManager.addContact("John", "Doe", "0123456789");
+            assertFalse(contactManager.getAllContacts().isEmpty());
+            assertEquals(1, contactManager.getAllContacts().size());
+        }
+    }
+
+    @Nested
+    class ParameterizedNestedTest {
+        @DisplayName("Repeat Contact Creation Test 5 times")
+        @ParameterizedTest
+        @ValueSource(strings = {"0123456789","0123456789","0123456789"})
+        public void shouldCreateContactCreationUsingValueSource(String phoneNumber) {
+            contactManager.addContact("John", "Doe", phoneNumber);
+            assertFalse(contactManager.getAllContacts().isEmpty());
+            assertEquals(1, contactManager.getAllContacts().size());
+        }
+
+        @DisplayName("Method Source Case - Phone Number should match the required Format")
+        @ParameterizedTest
+        @CsvSource({"0123456789","0123456798", "0123456797"})
+        public void shouldCreateContactCreationUsingCsvSource(String phoneNumber) {
+            contactManager.addContact("John", "Doe", phoneNumber);
+            assertFalse(contactManager.getAllContacts().isEmpty());
+            assertEquals(1, contactManager.getAllContacts().size());
+        }
+
+        @DisplayName("CSV File Source Case - Phone Number should match the required Format")
+        @ParameterizedTest
+        @CsvFileSource(resources = "/data.csv")
+        public void shouldCreateContactCreationUsingCsvFileSource(String phoneNumber) {
+            contactManager.addContact("John", "Doe", phoneNumber);
+            assertFalse(contactManager.getAllContacts().isEmpty());
+            assertEquals(1, contactManager.getAllContacts().size());
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package com.programming.techie;
+package com.company.main;
 
 public class Contact {
     private String firstName;
